@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Course from './components/Course'
 
+
 //Kaikille kursseille, käydään läpi map:lla
 //HUOM! Ei propseja vaan tuodaan suoraan courses
 const Courses = ({ courses }) => {
