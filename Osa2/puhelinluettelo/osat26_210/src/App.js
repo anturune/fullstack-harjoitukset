@@ -2,8 +2,28 @@ import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
 import './index.css'
 
+
+//Henkilön filteröimiseen filter shown with: -kenttä
+const Filter = ({ value, onChange }) => {
+
+    return (
+        <div>
+            filter shown with: <input value={value} onChange={onChange} />
+        </div>
+    )
+}
+
 //Henkilön renderöimiseen webbisivulle delete napilla
 const RenderPersons = ({ person, onClick }) => {
+    return (
+        <div>
+            <RenderPerson person={person} onClick={onClick} />
+        </div>
+    )
+}
+
+//Yksittäisen henkilön renderöiminen delete napilla
+const RenderPerson = ({ person, onClick }) => {
 
     return (
         <div>
@@ -13,6 +33,27 @@ const RenderPersons = ({ person, onClick }) => {
         </div>
     )
 }
+
+//Tällä luodaan uusi Person numeroineen phonebookiin
+const PersonForm = ({ valueName, onChangeName, valueNumber, onChangeNumber, onSubmit }) => {
+
+    return (
+        <div>
+            <form onSubmit={onSubmit}>
+                <div>
+                    Name: <input value={valueName} onChange={onChangeName} />
+                </div>
+                <div>
+                    Number: <input value={valueNumber} onChange={onChangeNumber} />
+                </div>
+                <div>
+                    <button type="submit">add</button>
+                </div>
+            </form>
+        </div>
+    )
+}
+
 //Tällä muotoillaan notificaatio henkilön poistamiseen
 const Notification = ({ message }) => {
     if (message === null) {
@@ -48,7 +89,7 @@ const App = () => {
     //Notificaatioille tilat
     const [errorMessage, setErrorMessage] = useState(null)
     const [addedMessage, setAddedMessage] = useState(null)
-    
+
     //Tällä haetaan data db.json filestä ja asetetaan persons
     //taulukkoon. Tietokantakysely viety omaan moduuliin src/services/persons.js
     //Tässä käytetään personServiceä, joka importattu
@@ -102,9 +143,9 @@ const App = () => {
                                 setAddedMessage(null)
                             }, 5000)
                         })
-                         //Selaimeen 5sec viesti, jos päivitys tietokantaan ei onnistunut
-                         //Esim. poistaa toisella selaimella henkilön ja samaan aikaan yrittää päivittää
-                         //Juuri poistetun henkilön tiedot
+                        //Selaimeen 5sec viesti, jos päivitys tietokantaan ei onnistunut
+                        //Esim. poistaa toisella selaimella henkilön ja samaan aikaan yrittää päivittää
+                        //Juuri poistetun henkilön tiedot
                         .catch(error => {
                             setErrorMessage('Information of ' + `${updatePersonObject.name}` + ' has already been removed from server')
                             setTimeout(() => {
@@ -195,36 +236,27 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <div>
-                filter shown with: <input value={howToFilter} onChange={handleFilterChange} />
-            </div>
+            <Filter value={howToFilter} onChange={handleFilterChange} />
+
             <h2>Add a new</h2>
             <Notification message={errorMessage} />
             <NotificationAdded message={addedMessage} />
-            <form onSubmit={addName}>
-                <div>
-                    Name: <input value={newName} onChange={handleNameChange} />
-                </div>
-                <div>
-                    Number: <input value={newNumber} onChange={handleNumberChange} />
-                </div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
+            <PersonForm valueName={newName} onChangeName={handleNameChange} valueNumber={newNumber} onChangeNumber={handleNumberChange} onSubmit={addName} />
 
             <h2>Numbers</h2>
-            <div>
-                <>
-                    {persons.filter(person => person.name.toLocaleLowerCase().includes(`${howToFilter}`)).map(filteredPerson => (
-                        <RenderPersons key={filteredPerson.id} person={filteredPerson} onClick={() => removePerson({ filteredPerson })} />
-                    ))
-                    }
-                </>
-            </div>
+            <>
+                {persons.filter(person => person.name.toLocaleLowerCase().includes(`${howToFilter}`)).map(filteredPerson => (
+                    <RenderPersons key={filteredPerson.id} person={filteredPerson} onClick={() => removePerson({ filteredPerson })} />
+                ))
+                }
+            </>
+
       ...<div>debugNameField: {newName}</div>
       ...<div>debugFilterField: {howToFilter}</div>
         </div>
+
     )
 }
+
+
 export default App
