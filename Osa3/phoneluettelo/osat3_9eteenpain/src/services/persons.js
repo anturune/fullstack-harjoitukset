@@ -1,5 +1,9 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/persons'
+//Tämä kun käytetään lokaalisti backend frontend yhdistelmää
+//const baseUrl = 'http://localhost:3001/api/persons'
+//Suhteellinen määritys kun ollaa yhdistetty forntend ja backend
+//Ja viedään Herokuun/Herokua varten
+const baseUrl = '/api/persons'
 
 //Haetaan kaikki henkilöoliot ja palautetaan taulukkona
 const getAll = () => {
@@ -21,10 +25,11 @@ const removePerson = (id) => {
 //Päivitetään persons objectia
 const updatePerson = (id, newObject) => {
     const request = axios.put(`${baseUrl}/${id}`, newObject)
+    console.log('TULIKO SERVICEEN UUSI OBJECTI', newObject.number)
     return request.then(response => response.data)
 }
 
 //Exportataan kaikki muualle käyttöön
 export default {
-    getAll, create, removePerson, updatePerson,
+    getAll, create, removePerson, updatePerson
 }

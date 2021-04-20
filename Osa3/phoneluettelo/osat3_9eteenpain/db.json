@@ -4,56 +4,6 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
-    },
-    {
-      "name": "Arto Hellas",
-      "number": "+1 3589745",
-      "id": 5
-    },
-    {
-      "name": "Hessu Räsänen",
-      "number": "+999999999999",
-      "id": 6
-    },
-    {
-      "name": "JP Räsänen",
-      "number": "+35698741253",
-      "id": 7
-    },
-    {
-      "name": "Satu Satunen",
-      "number": "+6589745122",
-      "id": 9
-    },
-    {
-      "name": "Petu Petunen",
-      "number": "+69696969",
-      "id": 10
-    },
-    {
-      "name": "Atu Atunen",
-      "number": "+358649546245",
-      "id": 11
-    },
-    {
-      "name": "POST Test",
-      "number": "+69874587455",
-      "id": 12
-    },
-    {
-      "name": "POST Test with Postman",
-      "number": "+69874587455",
-      "id": 13
-    },
-    {
-      "name": "POST Test with postman plaintext",
-      "number": "+69874587455",
-      "id": 16
-    },
-    {
-      "name": "POST Test",
-      "number": "+69874587455",
-      "id": 17
     }
   ]
 }

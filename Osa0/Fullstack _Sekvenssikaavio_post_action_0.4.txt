@@ -1,0 +1,33 @@
+title Uuden muistiinpanon luominen ja uudelleen renderöiminen
+
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note over selain:
+Lomake lähetetään selaimelta POST actionilla
+end note
+
+palvelin-->selain: Status code 302
+note over palvelin:
+Palvelin palauttaa statuskoodin 302, joka pyytää selainta
+hakemaan notesit uudelleen palvelimelta GET actionila
+HUOM! tästä eteenpäin suora kopio tehtävän annosta.
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+palvelin-->selain: HTML-koodi
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin-->selain: main.css
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+palvelin-->selain: main.js
+
+note over selain:
+Selain alkaa suorittaa js-koodia
+joka pyytää JSON-datan palvelimelta
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin-->selain: [{ content: "HTML on helppoa", date: "2019-01-01" }, ...]
+
+note over selain:
+Selain suorittaa tapahtumankäsittelijän
+joka renderöi muistiinpanot näytölle
+end note

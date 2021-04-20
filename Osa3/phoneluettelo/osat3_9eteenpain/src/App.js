@@ -3,7 +3,7 @@ import personService from './services/persons'
 import './index.css'
 
 
-//Henkilön filteröimiseen filter shown with: -kenttä
+//Henkilön filteröimiseen
 const Filter = ({ value, onChange }) => {
 
     return (
@@ -34,7 +34,7 @@ const RenderPerson = ({ person, onClick }) => {
     )
 }
 
-//Tällä luodaan uusi Person numeroineen phonebookiin
+//Lomake Person objectin luomiseen phonebookiin
 const PersonForm = ({ valueName, onChangeName, valueNumber, onChangeNumber, onSubmit }) => {
 
     return (
@@ -81,8 +81,9 @@ const NotificationAdded = ({ message }) => {
 }
 
 const App = () => {
+    //Person objectien tilan ylläpitämiseen
     const [persons, setPersons] = useState([])
-    //Muuttujia jotka toimivat dynaamisesti change
+    //Muuttujia/tilat jotka toimivat dynaamisesti change
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [howToFilter, setHowToFilter] = useState('')
@@ -90,7 +91,7 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState(null)
     const [addedMessage, setAddedMessage] = useState(null)
 
-    //Tällä haetaan data db.json filestä ja asetetaan persons
+    //Tällä haetaan data db.json filestä ja/tai Mongosta asetetaan persons
     //taulukkoon. Tietokantakysely viety omaan moduuliin src/services/persons.js
     //Tässä käytetään personServiceä, joka importattu
     useEffect(() => {
@@ -101,73 +102,87 @@ const App = () => {
             })
     }, [])
 
-    //console.log('Persons tauluko koko', persons.length)
-
     //Uuden nimen lisäys ja phonenumeron päivitys
     const addName = (event) => {
         //Estää lomakkeen lähetyksen oletusarvoisen toiminnan, 
         //joka aiheuttaisi mm. sivun uudelleenlatautumisen. 
         event.preventDefault()
-        //Muuttuja sitä varten, jos henkilö jo phonebookissa
-        let nameOnko = ''
-        //Annetaan varoitus, jos nimi on jo lisättynä ja pyydetään hyväksymään päivitys
-        for (let i = 0; i < persons.length; i++) {
-            console.log('Nimet', persons[i])
-            if (persons[i].name === newName) {
-                //Otetaan nimi talteen, jotta ei tee uutta lisäystä
-                nameOnko = newName
-                //Confirmoitava alertti, jolla voidaan päättää päivitetäänkö numero vai ei
-                if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-                    //Luodaan uusi person object
-                    //Huom! ei id:tä, koska annetaan se palvelimen vastuulle luoda
-                    const updatePersonObject = {
-                        name: newName,
-                        number: newNumber,
-                    }
-                    //Viedään uusi person object db.json fileen eli tietokantaan
-                    //Tietokanta post action viety omaan moduuliin src/services/persons.js
-                    //Tässä käytetään personServiceä, joka imporattu
-                    personService
-                        .updatePerson(persons[i].id, updatePersonObject)
-                        .then(returnedPerson => {
-                            //Päivitetään persons taulukkoa niin ettei vanhaa enää sieltä löydy ja lisätään
-                            //päivitetty person
-                            setPersons(persons.map(person => person.id !== persons[i].id ? person : returnedPerson))
-                            //Tyhjätään setNewName ja number kentät
-                            setNewName('')
-                            setNewNumber('')
-                            console.log('Success!')
-                            //Sealimeen 5sec viesti, jos päivitys tietokantaan onnistui
-                            setAddedMessage('Person ' + `${updatePersonObject.name}` + ' succefully changed')
-                            setTimeout(() => {
-                                setAddedMessage(null)
-                            }, 5000)
-                        })
-                        //Selaimeen 5sec viesti, jos päivitys tietokantaan ei onnistunut
-                        //Esim. poistaa toisella selaimella henkilön ja samaan aikaan yrittää päivittää
-                        //Juuri poistetun henkilön tiedot
-                        .catch(error => {
-                            setErrorMessage('Information of ' + `${updatePersonObject.name}` + ' has already been removed from server')
-                            setTimeout(() => {
-                                setErrorMessage(null)
-                            }, 5000)
-                            console.log('Person update failed')
-                        })
+
+        //Tällä voitaisiin myös tsekata, onko nimi jo olemassa kannassa
+        //Palauttaa joko True tai False
+        const personName = persons.find(person => {
+            console.log(person.name, person.id, typeof person.name, newName, typeof newName, person.name === newName)
+            return person.name === newName
+        })
+        //Jos nimi jo kannassa, niin otetaan indeksinumero talteen
+        //Jos ei ole, arvoksi tulee -1
+        const indexNumber = persons.findIndex(person => person.name === newName)
+        console.log('löydetyn indeksinumero', indexNumber)
+
+        //Jos indexinumero ei ole -1, -1 tarkoittaisi että ei ole kannassa
+        if (indexNumber !== -1) {
+            //Confirmoitava alertti, jolla voidaan päättää päivitetäänkö numero vai ei
+            if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+                //Luodaan uusi person object
+                //Huom! ei id:tä, koska annetaan se palvelimen vastuulle luoda
+                const updatePersonObject = {
+                    name: newName,
+                    number: newNumber,
                 }
+                //Viedään uusi person object db.json fileen eli tietokantaan sama koodi toimmii myös Mongoon
+                //Update toiminto moduulissa src/services/persons.js
+                //Tässä käytetään personServiceä, joka importattu
+                personService
+                    .updatePerson(persons[indexNumber].id, updatePersonObject)
+                    .then(returnedPerson => {
+                        console.log('MIKÄ ARVO TULEE TAKAISIN', returnedPerson.id)
+                        //Päivitetään persons taulukkoa niin ettei vanhaa enää sieltä löydy ja lisätään
+                        //päivitetty person
+                        setPersons(persons.map(person => person.id !== persons[indexNumber].id ? person : returnedPerson))
+
+                        //Tyhjätään setNewName ja number kentät
+                        setNewName('')
+                        setNewNumber('')
+                        console.log('Success!')
+                        console.log('TÄMÄ ID PÄIVITETÄÄN', persons[indexNumber].id)
+                        console.log('VAIHTUIKO ID VAI ONKO SAMA', returnedPerson.id)
+                        console.log('TÄMÄ NUMERO PÄIVITETÄÄN', persons[indexNumber].number)
+                        console.log('TÄKSI NUMEROKSI', returnedPerson.number)
+                        //Sealimeen 5sec viesti, jos päivitys tietokantaan onnistui
+                        setAddedMessage('Person ' + `${updatePersonObject.name}` + ' succefully changed')
+                        setTimeout(() => {
+                            setAddedMessage(null)
+                        }, 5000)
+                    })
+
+                    //Selaimeen 5sec viesti, jos päivitys tietokantaan ei onnistunut
+                    //Esim. poistaa toisella selaimella henkilön ja samaan aikaan yrittää päivittää
+                    //Juuri poistetun henkilön tiedot
+                    .catch(error => {
+                        setErrorMessage('Information of ' + `${updatePersonObject.name}` + ' has already been removed from server')
+                        setTimeout(() => {
+                            setErrorMessage(null)
+                        }, 5000)
+                        console.log('Person update failed')
+                    })
             }
         }
+
+
         //Jos henkilöä ei ole kannassa, niin luodaan uusi Person
-        if (nameOnko === '') {
+        if (indexNumber === -1) {
             console.log('Uuden luominen, koska ei ollut kannassa')
+
             //Luodaan uusi person object
             //Huom! ei id:tä, koska annetaan se palvelimen vastuulle luoda
             const newPersonObject = {
                 name: newName,
                 number: newNumber,
             }
-            //Viedään uusi person object db.json fileen eli tietokantaan
-            //Tietokanta post action viety omaan moduuliin src/services/persons.js
+            //Viedään uusi person object db.json fileen eli tietokantaan sama koodi toimmii myös Mongoon
+            //Post toiminto moduuliissa src/services/persons.js
             //Tässä käytetään personServiceä, joka imporattu
+            let onkoErroria = false
             personService
                 .create(newPersonObject)
                 .then(returnedPerson => {
@@ -176,16 +191,38 @@ const App = () => {
                     setNewName('')
                     setNewNumber('')
                     console.log('addName function', returnedPerson)
-
                 })
-            //Viesti onnistuneesta lisäyksestä
-            setAddedMessage('Person ' + `${newPersonObject.name}` + ' succesfully added')
-            console.log(newPersonObject.name)
-            //Lisäyksen viestille timeout eli kauanko näkyvillä
-            //Ja asetetaan arvoksi sen jälkeen null
-            setTimeout(() => {
-                setAddedMessage(null)
-            }, 5000)
+                //Otetaan Mongon validaattorin virhe talteen ja tulosteaan frontendiin
+                .catch(error => {
+                    if (error.name === 'Error') {
+                        //Jos päätyy virheeseen, niin muutetaan onkoErroria muuttujaa
+                        onkoErroria = true
+                        // pääset käsiksi palvelimen palauttamaan virheilmoitusolioon näin
+                        //HUOM! Lopussa vielä ".error", koska palvelin palauttaa error olion
+                        setErrorMessage(error.response.data.error)
+                        //Selaimeen voi palauttaa olion ja siksi tässä jätetty lopusta ".error" pois
+                        console.log('VIRHEVIESTI', error.response.data)
+                        console.log('VIRHEVIESTI NAME', error.name)
+                        console.log('1. ONKO ERRORIA TRUE VAI FALSE', onkoErroria)
+                        setTimeout(() => {
+                            setErrorMessage(null)
+                        }, 5000)
+                    }
+                })
+            console.log('2. ONKO ERRORIA TRUE VAI FALSE', onkoErroria)
+            //Jos ei päädy validation erroriin annetaan successfull viesti
+            if (onkoErroria===false) {
+                //Viesti onnistuneesta lisäyksestä
+                setAddedMessage('Person ' + `${newPersonObject.name}` + ' succesfully added')
+                console.log(newPersonObject.name)
+                //Lisäyksen viestille timeout eli kauanko näkyvillä
+                //Ja asetetaan arvoksi sen jälkeen null ettei viestiä näy 5sec jälkeen
+                setTimeout(() => {
+                    setAddedMessage(null)
+                }, 5000)
+            }
+
+
         }
     }
 
@@ -230,9 +267,6 @@ const App = () => {
             }, 5000)
         }
     }
-    //console.log('Persons listan koko ', persons.length)
-
-
     return (
         <div>
             <h2>Phonebook</h2>
@@ -257,6 +291,4 @@ const App = () => {
 
     )
 }
-
-
 export default App
