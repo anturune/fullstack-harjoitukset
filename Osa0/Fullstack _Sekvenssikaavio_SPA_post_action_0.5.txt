@@ -1,0 +1,26 @@
+title SPA sovelluksen "ensimmäinen" GET actioni
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+palvelin-->selain: HTML-koodi
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin-->selain: main.css
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+palvelin-->selain: spa.js
+
+note over selain:
+Selain suorittaa js-koodia,
+joka pyytää JSON-datan palvelimelta
+end note
+
+selain->palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin-->selain: [{ "content":"35913 is cursed","date":"2021-04-19T21:12:21.867Z" }, ...]
+
+note over selain:
+Selain suorittaa tapahtumankäsittelijän
+joka renderöi muistiinpanot näytölle
+DOM apia hyödyntäen
+HUOM! Eka sivun lataus samanlainen kuin
+perinteisessä HTML lomakkeita lataavissa
+sovelluksissa. Tämä kuva lähes suora kopio
+opintomateriaalista.
+end note
