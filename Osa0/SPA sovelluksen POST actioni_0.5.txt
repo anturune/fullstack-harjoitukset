@@ -1,0 +1,21 @@
+title SPA sovelluksen POST actioni
+
+selain-->palvelin:
+note over selain:
+Tapahtumakäsittelijä rekisteröi uuden lomakkeen
+ja estää "event.preventDefault()" metodilla sivun uudelleen latautumisen
+perinteiseen tapaan.
+Tapahtumakäsittelijä lisää muistiinpanon listalle ja renderöi
+muistiinpanolistan sivulle, joka sisältää myös uuden muistiinpanon.
+end note
+
+selain->palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note over selain:
+Uuden muistiinpanon tiedot lähetetään palvelimelle
+osoitteeseen new_note_spa JSON muotoisena datana. Datan
+tyyppi on määritelty headerissa.
+HTML lomaketta ei pyydetä uudelleen palvelimelta kuten
+perinteisissä HTML sovelluksissa vaan muistiinpanot on
+jo renderöity sivulle tapahtumakäsittelijän ylläpitämältä
+listalta.
+end note
