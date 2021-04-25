@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-//import personService from './services/persons'
-import personService from './services/newpersons'
+import personService from './services/persons'
+//import personService from './services/newpersons'
 import './index.css'
 
 

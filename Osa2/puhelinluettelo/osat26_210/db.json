@@ -27,33 +27,13 @@
     },
     {
       "name": "Petu Petunen",
-      "number": "+69696969",
+      "number": "123456",
       "id": 10
     },
     {
-      "name": "Atu Atunen",
-      "number": "+356987451236",
-      "id": 11
-    },
-    {
-      "name": "POST Test",
-      "number": "+69874587455",
-      "id": 12
-    },
-    {
-      "name": "POST Test with Postman",
-      "number": "+69874587455",
+      "name": "err",
+      "number": "12345",
       "id": 13
-    },
-    {
-      "name": "POST Test with postman plaintext",
-      "number": "+69874587455",
-      "id": 16
-    },
-    {
-      "name": "POST Test",
-      "number": "+69874587455",
-      "id": 17
     }
   ]
 }

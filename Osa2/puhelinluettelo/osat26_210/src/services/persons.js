@@ -1,7 +1,8 @@
 import axios from 'axios'
 //Tässä lisätään api URL:iin, koska backend on luotu sellaisena
 //Backend löytyy työaseman polusta C:\Users\astur\Documents\Fullstack\HarjoituksetBackEndOsaKolme
-const baseUrl = 'http://localhost:3001/api/persons'
+//const baseUrl = 'http://localhost:3001/api/persons'
+const baseUrl = 'http://localhost:3001/persons'
 
 //Haetaan kaikki henkilöoliot ja palautetaan taulukkona
 const getAll = () => {
@@ -28,5 +29,8 @@ const updatePerson = (id, newObject) => {
 
 //Exportataan kaikki muualle käyttöön
 export default {
-    getAll, create, removePerson, updatePerson,
+    getAll, 
+    create, 
+    removePerson, 
+    updatePerson
 }
